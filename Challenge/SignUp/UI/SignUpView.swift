@@ -1,36 +1,80 @@
-import SwiftUI
+import UIKit
 
-struct SignUpView: View {
-    @State private var firstName = ""
-    @State private var lastName = ""
-    @State private var email = ""
-    @State private var password = ""
+class SignUpView: UIView {
+    lazy var firstNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = NSLocalizedString("first_name", comment: "")
+        return textField
+    }()
     
-    var body: some View {
-        VStack(spacing: 16) {
-            TextField(NSLocalizedString("first_name", comment: ""), text: $firstName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            TextField(NSLocalizedString("last_name", comment: ""), text: $lastName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            TextField(NSLocalizedString("email", comment: ""), text: $email)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .keyboardType(.emailAddress)
-                .autocapitalization(.none)
-            
-            SecureField(NSLocalizedString("password", comment: ""), text: $password)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-            
-            Button(NSLocalizedString("create_account", comment: "")) {
-                // Handle account creation
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .padding()
+    lazy var lastNameTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = NSLocalizedString("last_name", comment: "")
+        return textField
+    }()
+    
+    lazy var emailTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = NSLocalizedString("email", comment: "")
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        return textField
+    }()
+    
+    lazy var passwordTextField: UITextField = {
+        let textField = UITextField()
+        textField.borderStyle = .roundedRect
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.placeholder = NSLocalizedString("password", comment: "")
+        textField.isSecureTextEntry = true
+        return textField
+    }()
+    
+    lazy var createAccountButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(NSLocalizedString("create_account", comment: ""), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [
+            firstNameTextField,
+            lastNameTextField,
+            emailTextField,
+            passwordTextField,
+            createAccountButton
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 16
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupViews() {
+        backgroundColor = .systemBackground
+        addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 16),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
+        ])
     }
 }
 
-#Preview {
-    SignUpView()
-}

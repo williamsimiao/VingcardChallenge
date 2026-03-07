@@ -15,6 +15,7 @@ class SignUpViewModel: ObservableObject {
     }
     
     func createAccount() async throws {
-        try await dataSource.createUser(firstName: firstName, lastName: lastName, email: email, password: password)
+        let model = SignUpModel(firstName: firstName, lastName: lastName, email: email, password: password)
+        try await dataSource.createUser(model: model)
     }
 }

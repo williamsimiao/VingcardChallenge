@@ -1,10 +1,3 @@
-//
-//  ChallengeApp.swift
-//  Challenge
-//
-//  Created by William Simião on 07/03/26.
-//
-
 import SwiftUI
 
 @main
@@ -23,3 +16,4 @@ struct SignUpViewControllerRepresentable: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: SignUpViewController, context: Context) {}
 }
+
