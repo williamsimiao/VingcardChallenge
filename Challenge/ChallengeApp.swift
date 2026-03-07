@@ -11,7 +11,15 @@ import SwiftUI
 struct ChallengeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SignUpViewControllerRepresentable()
         }
     }
+}
+
+struct SignUpViewControllerRepresentable: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> SignUpViewController {
+        SignUpViewController()
+    }
+    
+    func updateUIViewController(_ uiViewController: SignUpViewController, context: Context) {}
 }
