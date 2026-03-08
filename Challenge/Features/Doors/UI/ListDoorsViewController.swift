@@ -6,11 +6,11 @@ class ListDoorsViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private var doors: [DoorModel] = []
     
-    private let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.placeholder = NSLocalizedString("search_door_placeholder", comment: "")
-        return searchBar
+    private let searchController: UISearchController = {
+        let controller = UISearchController(searchResultsController: nil)
+        controller.searchBar.placeholder = NSLocalizedString("search_door_placeholder", comment: "")
+        controller.obscuresBackgroundDuringPresentation = false
+        return controller
     }()
     
     private let tableView: UITableView = {
@@ -39,20 +39,17 @@ class ListDoorsViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
-        searchBar.delegate = self
+        searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
+        
         tableView.delegate = self
         tableView.dataSource = self
         
-        view.addSubview(searchBar)
         view.addSubview(tableView)
         view.addSubview(loadingView)
         
         NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -107,8 +104,10 @@ extension ListDoorsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
-extension ListDoorsViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+extension ListDoorsViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let searchText = searchController.searchBar.text else { return }
+        
         Task {
             if searchText.isEmpty {
                 await viewModel.getDoors()
@@ -116,9 +115,5 @@ extension ListDoorsViewController: UISearchBarDelegate {
                 await viewModel.findDoorByName(searchText)
             }
         }
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
     }
 }
