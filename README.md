@@ -17,3 +17,9 @@ iOS project
 ## License
 
 MIT
+
+## Feature Archtecture
+
+Utilizei MVVM para o contexto de UI e dominio, para as requisições criei uma classe de remoteDataSource para agrupar os endpoints relacionados as features.  
+
+## SignUp and SignUp feature

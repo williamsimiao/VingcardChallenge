@@ -10,11 +10,19 @@ class UserDataSource {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = try JSONEncoder().encode(model)
             
-            let (_, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse else {
                 return .failure(URLError(.badServerResponse))
             }
-            return .success(())
+            
+            if (200...299).contains(httpResponse.statusCode) {
+                return .success(())
+            } else {
+                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                    return .failure(SignUpError(errorResponse: errorResponse))
+                }
+                return .failure(URLError(.badServerResponse))
+            }
         } catch {
             return .failure(error)
         }
