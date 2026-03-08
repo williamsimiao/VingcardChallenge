@@ -37,6 +37,7 @@ class UserDataSource: UserDataSourceProtocol {
         
         if case .success(let response) = result {
             networkClient.token = response.token
+            CredentialsStorage.shared.saveCredentials(email: model.email, password: model.password)
         }
         
         return result.map { _ in () }

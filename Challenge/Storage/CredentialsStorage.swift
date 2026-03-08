@@ -1,16 +1,14 @@
 import Foundation
 import Security
 
-protocol CredentialsStorageProtocol {
-    func saveCredentials(email: String, password: String)
-    func getCredentials() -> (email: String, password: String)?
-    func clearCredentials()
-}
-
-class CredentialsStorage: CredentialsStorageProtocol {
+class CredentialsStorage {
+    static let shared = CredentialsStorage()
+    
     private let emailKey = "stored_email"
     private let passwordKey = "stored_password"
     private let service = "com.challenge.app"
+    
+    private init() {}
     
     func saveCredentials(email: String, password: String) {
         UserDefaults.standard.set(email, forKey: emailKey)
