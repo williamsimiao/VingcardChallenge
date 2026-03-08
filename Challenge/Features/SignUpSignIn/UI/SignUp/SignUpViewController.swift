@@ -4,6 +4,7 @@ import Combine
 class SignUpViewController: UIViewController {
     private let viewModel = SignUpViewModel()
     private let signUpView = SignUpView()
+    private let router = SignUpRouter()
     private var cancellables = Set<AnyCancellable>()
     private let loadingView = UIActivityIndicatorView(style: .large)
     
@@ -13,6 +14,7 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        router.viewController = self
         setupLoadingView()
         signUpView.createAccountButton.addTarget(self, action: #selector(createAccountTapped), for: .touchUpInside)
         observeState()
@@ -48,6 +50,7 @@ class SignUpViewController: UIViewController {
         case .success:
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
+            router.navigate(to: .back)
         case .failure(let error):
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true

@@ -4,7 +4,7 @@ import Combine
 enum SignInState {
     case idle
     case loading
-    case success(String)
+    case success
     case failure(SignInError)
 }
 
@@ -23,14 +23,10 @@ class SignInViewModel: ObservableObject {
         let result = await dataSource.loginUser(email: email, password: password)
         
         switch result {
-        case .success(let token):
-            state = .success(token)
+        case .success:
+            state = .success
         case .failure(let error):
-            if let signInError = error as? SignInError {
-                state = .failure(signInError)
-            } else {
-                state = .failure(.unknown("UNKNOWN_ERROR"))
-            }
+            state = .failure(error)
         }
     }
 }

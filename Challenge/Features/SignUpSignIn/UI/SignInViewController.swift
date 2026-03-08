@@ -4,6 +4,7 @@ import Combine
 class SignInViewController: UIViewController {
     private let viewModel = SignInViewModel()
     private let signInView = SignInView()
+    private let router = SignInRouter()
     private var cancellables = Set<AnyCancellable>()
     private let loadingView = UIActivityIndicatorView(style: .large)
     
@@ -13,8 +14,10 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        router.viewController = self
         setupLoadingView()
         signInView.signInButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
+        signInView.signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
         observeState()
     }
     
@@ -45,10 +48,9 @@ class SignInViewController: UIViewController {
         case .loading:
             loadingView.startAnimating()
             view.isUserInteractionEnabled = false
-        case .success(let token):
+        case .success:
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
-            print("Signed in with token: \(token)")
         case .failure(let error):
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
@@ -69,5 +71,9 @@ class SignInViewController: UIViewController {
                 password: signInView.passwordTextField.text ?? ""
             )
         }
+    }
+    
+    @objc private func signUpTapped() {
+        router.navigate(to: .signUp)
     }
 }

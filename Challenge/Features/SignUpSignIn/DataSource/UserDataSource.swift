@@ -2,7 +2,7 @@ import Foundation
 
 class UserDataSource {
     
-    func createUser(model: SignUpModel) async -> Result<Void, Error> {
+    func createUser(model: SignUpModel) async -> Result<Void, SignUpError> {
         do {
             let url = URL(string: APIConfig.baseURL + "users/signup")!
             var request = URLRequest(url: url)
@@ -12,7 +12,7 @@ class UserDataSource {
             
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(URLError(.badServerResponse))
+                return .failure(.api(.badServerResponse))
             }
             
             if (200...299).contains(httpResponse.statusCode) {
@@ -21,14 +21,14 @@ class UserDataSource {
                 if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     return .failure(SignUpError(errorResponse: errorResponse))
                 }
-                return .failure(URLError(.badServerResponse))
+                return .failure(.api(.badServerResponse))
             }
         } catch {
-            return .failure(error)
+            return .failure(.api(.badServerResponse))
         }
     }
     
-    func loginUser(email: String, password: String) async -> Result<String, Error> {
+    func loginUser(email: String, password: String) async -> Result<String, SignInError> {
         do {
             let url = URL(string: APIConfig.baseURL + "users/signin")!
             var request = URLRequest(url: url)
@@ -40,7 +40,7 @@ class UserDataSource {
             
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(URLError(.badServerResponse))
+                return .failure(.api(.badServerResponse))
             }
             
             if (200...299).contains(httpResponse.statusCode) {
@@ -50,10 +50,10 @@ class UserDataSource {
                 if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
                     return .failure(SignInError(errorResponse: errorResponse))
                 }
-                return .failure(URLError(.badServerResponse))
+                return .failure(.api(.badServerResponse))
             }
         } catch {
-            return .failure(error)
+            return .failure(.api(.badServerResponse))
         }
     }
 }

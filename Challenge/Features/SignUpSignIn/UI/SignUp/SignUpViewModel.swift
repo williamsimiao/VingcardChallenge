@@ -28,11 +28,7 @@ class SignUpViewModel: ObservableObject {
         case .success:
             state = .success
         case .failure(let error):
-            if let signUpError = error as? SignUpError {
-                state = .failure(signUpError)
-            } else {
-                state = .failure(.unknown("UNKNOWN_ERROR"))
-            }
+            state = .failure(error)
         }
     }
 }

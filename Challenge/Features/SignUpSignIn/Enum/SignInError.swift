@@ -2,14 +2,14 @@ import Foundation
 
 enum SignInError: Error {
     case invalidCredentials
-    case unknown(String)
+    case api(APIError)
     
     init(errorResponse: ErrorResponse) {
         switch errorResponse.code {
         case "INVALID_CREDENTIALS":
             self = .invalidCredentials
         default:
-            self = .unknown("\(errorResponse.code) - \(errorResponse.description)")
+            self = .api(.unknown("\(errorResponse.code) - \(errorResponse.description)"))
         }
     }
     
@@ -17,8 +17,8 @@ enum SignInError: Error {
         switch self {
         case .invalidCredentials:
             return NSLocalizedString("error_invalid_credentials", comment: "")
-        case .unknown(let description):
-            return description
+        case .api(let apiError):
+            return apiError.localizedMessage
         }
     }
 }

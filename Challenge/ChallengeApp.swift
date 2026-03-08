@@ -4,16 +4,17 @@ import SwiftUI
 struct ChallengeApp: App {
     var body: some Scene {
         WindowGroup {
-            SignInViewControllerRepresentable()
+            NavigationViewControllerRepresentable()
         }
     }
 }
 
-struct SignInViewControllerRepresentable: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> SignInViewController {
-        SignInViewController()
+struct NavigationViewControllerRepresentable: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UINavigationController {
+        let signInVC = SignInViewController()
+        return UINavigationController(rootViewController: signInVC)
     }
     
-    func updateUIViewController(_ uiViewController: SignInViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {}
 }
 

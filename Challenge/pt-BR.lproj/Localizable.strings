@@ -17,4 +17,5 @@
 
 /* SignIn Errors */
 "error_invalid_credentials" = "Credenciais inválidas";
+"error_bad_server_response" = "Erro no servidor";
 

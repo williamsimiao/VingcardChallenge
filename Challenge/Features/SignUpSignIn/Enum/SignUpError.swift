@@ -4,7 +4,7 @@ enum SignUpError: Error {
     case serverValidation
     case weakPassword
     case emailAlreadyExists
-    case unknown(String)
+    case api(APIError)
     
     init(errorResponse: ErrorResponse) {
         switch errorResponse.code {
@@ -15,7 +15,7 @@ enum SignUpError: Error {
         case "EMAIL_ALREADY_EXISTS":
             self = .emailAlreadyExists
         default:
-            self = .unknown("\(errorResponse.code) - \(errorResponse.description)")
+            self = .api(.unknown("\(errorResponse.code) - \(errorResponse.description)"))
         }
     }
     
@@ -27,8 +27,8 @@ enum SignUpError: Error {
             return NSLocalizedString("error_weak_password", comment: "")
         case .emailAlreadyExists:
             return NSLocalizedString("error_email_already_exists", comment: "")
-        case .unknown(let description):
-            return description
+        case .api(let apiError):
+            return apiError.localizedMessage
         }
     }
 }
