@@ -28,6 +28,17 @@ class SignInViewController: UIViewController {
         signInView.signInButton.addTarget(self, action: #selector(signInTapped), for: .touchUpInside)
         signInView.signUpButton.addTarget(self, action: #selector(signUpTapped), for: .touchUpInside)
         observeState()
+        loadStoredCredentials()
+    }
+    
+    private func loadStoredCredentials() {
+        if let credentials = viewModel.getStoredCredentials() {
+            signInView.emailTextField.text = credentials.email
+            signInView.passwordTextField.text = credentials.password
+            Task {
+                await viewModel.signIn(email: credentials.email, password: credentials.password)
+            }
+        }
     }
     
     private func setupLoadingView() {

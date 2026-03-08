@@ -12,9 +12,15 @@ enum SignInState {
 class SignInViewModel: ObservableObject {
     @Published var state: SignInState = .idle
     private let dataSource: UserDataSourceProtocol
+    private let credentialsStorage: CredentialsStorageProtocol
     
-    init(dataSource: UserDataSourceProtocol) {
+    init(dataSource: UserDataSourceProtocol, credentialsStorage: CredentialsStorageProtocol) {
         self.dataSource = dataSource
+        self.credentialsStorage = credentialsStorage
+    }
+    
+    func getStoredCredentials() -> (email: String, password: String)? {
+        return credentialsStorage.getCredentials()
     }
     
     func signIn(email: String, password: String) async {
@@ -25,6 +31,7 @@ class SignInViewModel: ObservableObject {
         
         switch result {
         case .success:
+            credentialsStorage.saveCredentials(email: email, password: password)
             state = .success
         case .failure(let error):
             state = .failure(error)
