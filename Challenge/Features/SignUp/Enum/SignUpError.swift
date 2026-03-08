@@ -1,21 +1,21 @@
 import Foundation
 
 enum SignUpError: Error {
-    case invalidEmail
+    case serverValidation
     case weakPassword
-    case userAlreadyExists
+    case emailAlreadyExists
     case unknown(String)
     
     init(errorResponse: ErrorResponse) {
         switch errorResponse.code {
-        case "INVALID_EMAIL":
-            self = .invalidEmail
+        case "VALIDATION_ERROR":
+            self = .serverValidation
         case "WEAK_PASSWORD":
             self = .weakPassword
-        case "USER_ALREADY_EXISTS":
-            self = .userAlreadyExists
+        case "EMAIL_ALREADY_EXISTS":
+            self = .emailAlreadyExists
         default:
-            self = .unknown(errorResponse.code)
+            self = .unknown("\(errorResponse.code) - \(errorResponse.description)")
         }
     }
 }
