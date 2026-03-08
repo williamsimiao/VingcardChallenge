@@ -1,9 +1,12 @@
 import Foundation
 
 class NetworkClient {
-    private let baseURL: String
+    static let shared = NetworkClient()
     
-    init(baseURL: String = APIConfig.baseURL) {
+    private let baseURL: String
+    var token: String?
+    
+    private init(baseURL: String = APIConfig.baseURL) {
         self.baseURL = baseURL
     }
     
@@ -22,6 +25,10 @@ class NetworkClient {
             var request = URLRequest(url: requestURL)
             request.httpMethod = method
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            if let token = token {
+                request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
             
             if let body = body {
                 request.httpBody = try JSONEncoder().encode(body)

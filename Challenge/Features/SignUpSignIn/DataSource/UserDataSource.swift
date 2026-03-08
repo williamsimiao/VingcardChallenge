@@ -2,13 +2,13 @@ import Foundation
 
 protocol UserDataSourceProtocol {
     func createUser(model: SignUpModel) async -> Result<Void, SignUpError>
-    func loginUser(model: SignInModel) async -> Result<String, SignInError>
+    func loginUser(model: SignInModel) async -> Result<Void, SignInError>
 }
 
 class UserDataSource: UserDataSourceProtocol {
     private let networkClient: NetworkClient
     
-    init(networkClient: NetworkClient = NetworkClient()) {
+    init(networkClient: NetworkClient = .shared) {
         self.networkClient = networkClient
     }
     
@@ -26,7 +26,7 @@ class UserDataSource: UserDataSourceProtocol {
         return result.map { _ in () }
     }
     
-    func loginUser(model: SignInModel) async -> Result<String, SignInError> {
+    func loginUser(model: SignInModel) async -> Result<Void, SignInError> {
         let result: Result<SignInResponse, SignInError> = await networkClient.request(
             endpoint: "users/signin",
             method: "POST",
@@ -35,7 +35,11 @@ class UserDataSource: UserDataSourceProtocol {
             errorHandler: { SignInError(errorResponse: $0) }
         )
         
-        return result.map { $0.token }
+        if case .success(let response) = result {
+            networkClient.token = response.token
+        }
+        
+        return result.map { _ in () }
     }
 }
 
