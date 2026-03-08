@@ -4,7 +4,6 @@ import Combine
 class ListDoorsViewController: UIViewController {
     private let viewModel = ListDoorsViewModel()
     private var cancellables = Set<AnyCancellable>()
-    private var doors: [DoorModel] = []
     
     private let searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
@@ -73,9 +72,8 @@ class ListDoorsViewController: UIViewController {
             loadingView.stopAnimating()
         case .loading:
             loadingView.startAnimating()
-        case .success(let doors):
+        case .success:
             loadingView.stopAnimating()
-            self.doors = doors
             tableView.reloadData()
         case .failure(let error):
             loadingView.stopAnimating()
@@ -94,13 +92,25 @@ class ListDoorsViewController: UIViewController {
 
 extension ListDoorsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return doors.count
+        return viewModel.doors.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DoorCell", for: indexPath)
-        cell.textLabel?.text = doors[indexPath.row].name
+        cell.textLabel?.text = viewModel.doors[indexPath.row].name
         return cell
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if offsetY > contentHeight - height - 100 {
+            Task {
+                await viewModel.loadMoreDoors()
+            }
+        }
     }
 }
 
