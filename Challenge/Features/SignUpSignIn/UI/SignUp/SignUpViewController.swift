@@ -29,6 +29,14 @@ class SignUpViewController: UIViewController {
         observeState()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        signUpView.firstNameTextField.text = ""
+        signUpView.lastNameTextField.text = ""
+        signUpView.emailTextField.text = ""
+        signUpView.passwordTextField.text = ""
+    }
+    
     private func setupLoadingView() {
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         loadingView.hidesWhenStopped = true

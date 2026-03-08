@@ -31,6 +31,12 @@ class SignInViewController: UIViewController {
         loadStoredCredentials()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        signInView.emailTextField.text = ""
+        signInView.passwordTextField.text = ""
+    }
+    
     private func loadStoredCredentials() {
         if let credentials = viewModel.getStoredCredentials() {
             signInView.emailTextField.text = credentials.email
