@@ -56,19 +56,9 @@ class SignUpViewController: UIViewController {
     }
     
     private func showError(_ error: SignUpError) {
-        let message: String
-        switch error {
-        case .serverValidation:
-            message = NSLocalizedString("error_server_validation", comment: "")
-        case .weakPassword:
-            message = NSLocalizedString("error_weak_password", comment: "")
-        case .emailAlreadyExists:
-            message = NSLocalizedString("error_email_already_exists", comment: "")
-        case .unknown(let description):
-            message = description
-        }
-        
-        let alert = UIAlertController(title: NSLocalizedString("error_title", comment: ""), message: message, preferredStyle: .alert)
+        let alert = UIAlertController(title: NSLocalizedString("error_title", comment: ""),
+                                      message: error.localizedMessage,
+                                      preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }

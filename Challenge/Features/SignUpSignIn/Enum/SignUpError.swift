@@ -18,4 +18,17 @@ enum SignUpError: Error {
             self = .unknown("\(errorResponse.code) - \(errorResponse.description)")
         }
     }
+    
+    var localizedMessage: String {
+        switch self {
+        case .serverValidation:
+            return NSLocalizedString("error_server_validation", comment: "")
+        case .weakPassword:
+            return NSLocalizedString("error_weak_password", comment: "")
+        case .emailAlreadyExists:
+            return NSLocalizedString("error_email_already_exists", comment: "")
+        case .unknown(let description):
+            return description
+        }
+    }
 }

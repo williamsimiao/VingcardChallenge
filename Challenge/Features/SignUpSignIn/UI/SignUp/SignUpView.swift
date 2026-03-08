@@ -40,6 +40,10 @@ class SignUpView: UIView {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("create_account", comment: ""), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = .systemBlue
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 8
+        button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 24, bottom: 12, right: 24)
         return button
     }()
     
