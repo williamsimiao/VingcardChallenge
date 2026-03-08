@@ -2,6 +2,7 @@ import UIKit
 
 enum SignInRoute {
     case signUp
+    case listDoors
 }
 
 class SignInRouter {
@@ -12,6 +13,9 @@ class SignInRouter {
         case .signUp:
             let signUpVC = SignUpViewController()
             viewController?.navigationController?.pushViewController(signUpVC, animated: true)
+        case .listDoors:
+            let listDoorsVC = ListDoorsViewController()
+            viewController?.navigationController?.pushViewController(listDoorsVC, animated: true)
         }
     }
 }

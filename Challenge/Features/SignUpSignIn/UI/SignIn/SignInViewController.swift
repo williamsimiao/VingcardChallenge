@@ -51,7 +51,7 @@ class SignInViewController: UIViewController {
         case .success:
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
-            print("Loggin successful!")
+            router.navigate(to: .listDoors)
         case .failure(let error):
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
