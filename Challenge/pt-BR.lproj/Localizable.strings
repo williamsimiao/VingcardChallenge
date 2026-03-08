@@ -4,3 +4,10 @@
 "email" = "E-mail";
 "password" = "Senha";
 "create_account" = "Criar Conta";
+
+/* SignUp Errors */
+"error_title" = "Erro";
+"error_server_validation" = "Erro de validação";
+"error_weak_password" = "Senha muito fraca";
+"error_email_already_exists" = "E-mail já existe";
+

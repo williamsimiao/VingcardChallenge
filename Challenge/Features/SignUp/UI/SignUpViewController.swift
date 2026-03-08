@@ -5,6 +5,7 @@ class SignUpViewController: UIViewController {
     private let viewModel = SignUpViewModel()
     private let signUpView = SignUpView()
     private var cancellables = Set<AnyCancellable>()
+    private let loadingView = UIActivityIndicatorView(style: .large)
     
     override func loadView() {
         view = signUpView
@@ -12,8 +13,20 @@ class SignUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupLoadingView()
         signUpView.createAccountButton.addTarget(self, action: #selector(createAccountTapped), for: .touchUpInside)
         observeState()
+    }
+    
+    private func setupLoadingView() {
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.hidesWhenStopped = true
+        view.addSubview(loadingView)
+        
+        NSLayoutConstraint.activate([
+            loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
     
     private func observeState() {
@@ -27,14 +40,37 @@ class SignUpViewController: UIViewController {
     private func handleState(_ state: SignUpState) {
         switch state {
         case .idle:
-            break
+            loadingView.stopAnimating()
+            view.isUserInteractionEnabled = true
         case .loading:
-            print("Loading...")
+            loadingView.startAnimating()
+            view.isUserInteractionEnabled = false
         case .success:
-            print("Account created successfully")
-        case .error(let error):
-            print("Failed to create account: \(error)")
+            loadingView.stopAnimating()
+            view.isUserInteractionEnabled = true
+        case .failure(let error):
+            loadingView.stopAnimating()
+            view.isUserInteractionEnabled = true
+            showError(error)
         }
+    }
+    
+    private func showError(_ error: SignUpError) {
+        let message: String
+        switch error {
+        case .serverValidation:
+            message = NSLocalizedString("error_server_validation", comment: "")
+        case .weakPassword:
+            message = NSLocalizedString("error_weak_password", comment: "")
+        case .emailAlreadyExists:
+            message = NSLocalizedString("error_email_already_exists", comment: "")
+        case .unknown(let description):
+            message = description
+        }
+        
+        let alert = UIAlertController(title: NSLocalizedString("error_title", comment: ""), message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
     
     @objc private func createAccountTapped() {

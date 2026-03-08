@@ -5,7 +5,7 @@ enum SignUpState {
     case idle
     case loading
     case success
-    case error(SignUpError)
+    case failure(SignUpError)
 }
 
 @MainActor
@@ -29,9 +29,9 @@ class SignUpViewModel: ObservableObject {
             state = .success
         case .failure(let error):
             if let signUpError = error as? SignUpError {
-                state = .error(signUpError)
+                state = .failure(signUpError)
             } else {
-                state = .error(.unknown("UNKNOWN_ERROR"))
+                state = .failure(.unknown("UNKNOWN_ERROR"))
             }
         }
     }

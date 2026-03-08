@@ -4,3 +4,9 @@
 "email" = "Email";
 "password" = "Password";
 "create_account" = "Create Account";
+
+/* SignUp Errors */
+"error_title" = "Error";
+"error_server_validation" = "Validation error";
+"error_weak_password" = "Password is too weak";
+"error_email_already_exists" = "Email already exists";
