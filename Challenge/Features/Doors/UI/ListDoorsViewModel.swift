@@ -13,75 +13,87 @@ class ListDoorsViewModel: ObservableObject {
     @Published var state: ListDoorsState = .idle
     @Published var doors: [DoorModel] = []
     private let dataSource: DoorDataSourceProtocol
-    private var currentPage = 0
+    
+    private var allDoorsPage = 0
+    private var allDoorsIsLastPage = false
+    
+    private var searchPage = 0
+    private var searchIsLastPage = false
+    private var searchText: String?
+    
     private let pageSize = 20
-    private var isLastPage = false
     private var isLoading = false
-    private var currentSearchText: String?
     
     init(dataSource: DoorDataSourceProtocol = DoorDataSource()) {
         self.dataSource = dataSource
     }
     
-    func getDoors() async {
+    func getDoors(loadMore: Bool = false) async {
         guard !isLoading else { return }
+        guard !loadMore || !allDoorsIsLastPage else { return }
+        
         isLoading = true
-        currentSearchText = nil
-        currentPage = 0
-        state = .loading
+        searchText = nil
         
-        let result = await dataSource.getDoors(page: currentPage, size: pageSize)
-        
-        switch result {
-        case .success(let response):
-            isLastPage = response.last
-            doors = response.content
-            state = .success
-        case .failure(let error):
-            state = .failure(error)
-        }
-        isLoading = false
-    }
-    
-    func findDoorByName(_ name: String) async {
-        guard !isLoading else { return }
-        isLoading = true
-        currentSearchText = name
-        currentPage = 0
-        state = .loading
-        
-        let result = await dataSource.findDoorByName(name: name, page: currentPage, size: pageSize)
-        
-        switch result {
-        case .success(let response):
-            isLastPage = response.last
-            doors = response.content
-            state = .success
-        case .failure(let error):
-            state = .failure(error)
-        }
-        isLoading = false
-    }
-    
-    func loadMoreDoors() async {
-        guard !isLoading, !isLastPage else { return }
-        isLoading = true
-        currentPage += 1
-        
-        let result: Result<DoorsResponse, DoorError>
-        if let searchText = currentSearchText {
-            result = await dataSource.findDoorByName(name: searchText, page: currentPage, size: pageSize)
+        if !loadMore {
+            allDoorsPage = 0
+            state = .loading
         } else {
-            result = await dataSource.getDoors(page: currentPage, size: pageSize)
+            allDoorsPage += 1
         }
+        
+        let result = await dataSource.getDoors(page: allDoorsPage, size: pageSize)
         
         switch result {
         case .success(let response):
-            isLastPage = response.last
-            doors.append(contentsOf: response.content)
+            allDoorsIsLastPage = response.last
+            if loadMore {
+                doors.append(contentsOf: response.content)
+            } else {
+                doors = response.content
+            }
             state = .success
-        case .failure:
-            currentPage -= 1
+        case .failure(let error):
+            if loadMore {
+                allDoorsPage -= 1
+            } else {
+                state = .failure(error)
+            }
+        }
+        isLoading = false
+    }
+    
+    func findDoorByName(_ name: String, loadMore: Bool = false) async {
+        guard !isLoading else { return }
+        guard !loadMore || !searchIsLastPage else { return }
+        
+        isLoading = true
+        searchText = name
+        
+        if !loadMore {
+            searchPage = 0
+            state = .loading
+        } else {
+            searchPage += 1
+        }
+        
+        let result = await dataSource.findDoorByName(name: name, page: searchPage, size: pageSize)
+        
+        switch result {
+        case .success(let response):
+            searchIsLastPage = response.last
+            if loadMore {
+                doors.append(contentsOf: response.content)
+            } else {
+                doors = response.content
+            }
+            state = .success
+        case .failure(let error):
+            if loadMore {
+                searchPage -= 1
+            } else {
+                state = .failure(error)
+            }
         }
         isLoading = false
     }

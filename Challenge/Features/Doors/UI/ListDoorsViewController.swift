@@ -108,7 +108,11 @@ extension ListDoorsViewController: UITableViewDelegate, UITableViewDataSource {
         
         if offsetY > contentHeight - height - 100 {
             Task {
-                await viewModel.loadMoreDoors()
+                if let searchText = searchController.searchBar.text, !searchText.isEmpty {
+                    await viewModel.findDoorByName(searchText, loadMore: true)
+                } else {
+                    await viewModel.getDoors(loadMore: true)
+                }
             }
         }
     }
