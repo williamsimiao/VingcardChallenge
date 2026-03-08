@@ -5,8 +5,15 @@
 "password" = "Password";
 "create_account" = "Create Account";
 
+/* SignInView */
+"sign_in" = "Sign In";
+"sign_up" = "Sign Up";
+
 /* SignUp Errors */
 "error_title" = "Error";
 "error_server_validation" = "Validation error";
 "error_weak_password" = "Password is too weak";
 "error_email_already_exists" = "Email already exists";
+
+/* SignIn Errors */
+"error_invalid_credentials" = "Invalid credentials";

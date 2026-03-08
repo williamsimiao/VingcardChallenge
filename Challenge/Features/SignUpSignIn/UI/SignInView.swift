@@ -31,11 +31,19 @@ class SignInView: UIView {
         return button
     }()
     
+    lazy var signUpButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle(NSLocalizedString("sign_up", comment: ""), for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [
             emailTextField,
             passwordTextField,
-            signInButton
+            signInButton,
+            signUpButton
         ])
         stackView.axis = .vertical
         stackView.spacing = 16
