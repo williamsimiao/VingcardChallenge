@@ -2,6 +2,7 @@ import Foundation
 
 protocol DoorDataSourceProtocol {
     func getDoors(page: Int, size: Int) async -> Result<DoorsResponse, DoorError>
+    func findDoorByName(name: String, page: Int, size: Int) async -> Result<DoorsResponse, DoorError>
 }
 
 class DoorDataSource: DoorDataSourceProtocol {
@@ -14,6 +15,18 @@ class DoorDataSource: DoorDataSourceProtocol {
     func getDoors(page: Int, size: Int) async -> Result<DoorsResponse, DoorError> {
         let result: Result<DoorsResponse, DoorError> = await networkClient.request(
             endpoint: "doors?page=\(page)&size=\(size)",
+            method: "GET",
+            responseType: DoorsResponse.self,
+            errorHandler: { DoorError(errorResponse: $0) }
+        )
+        
+        return result
+    }
+    
+    func findDoorByName(name: String, page: Int, size: Int) async -> Result<DoorsResponse, DoorError> {
+        let encodedName = name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? name
+        let result: Result<DoorsResponse, DoorError> = await networkClient.request(
+            endpoint: "doors/find?name=\(encodedName)&page=\(page)&size=\(size)",
             method: "GET",
             responseType: DoorsResponse.self,
             errorHandler: { DoorError(errorResponse: $0) }
