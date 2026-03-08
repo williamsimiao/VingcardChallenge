@@ -51,6 +51,7 @@ class SignInViewController: UIViewController {
         case .success:
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true
+            print("Loggin successful!")
         case .failure(let error):
             loadingView.stopAnimating()
             view.isUserInteractionEnabled = true

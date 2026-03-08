@@ -20,7 +20,9 @@ class SignInViewModel: ObservableObject {
     func signIn(email: String, password: String) async {
         state = .loading
         
-        let result = await dataSource.loginUser(email: email, password: password)
+//        let model = SignInModel(email: email, password: password)
+        let model = SignInModel.mock
+        let result = await dataSource.loginUser(model: model)
         
         switch result {
         case .success:

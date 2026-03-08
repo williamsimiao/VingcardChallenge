@@ -24,19 +24,17 @@ class UserDataSource {
                 return .failure(.api(.badServerResponse))
             }
         } catch {
-            return .failure(.api(.badServerResponse))
+            return .failure(.api(.unknown(error.localizedDescription)))
         }
     }
     
-    func loginUser(email: String, password: String) async -> Result<String, SignInError> {
+    func loginUser(model: SignInModel) async -> Result<String, SignInError> {
         do {
             let url = URL(string: APIConfig.baseURL + "users/signin")!
             var request = URLRequest(url: url)
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            
-            let body = ["email": email, "password": password]
-            request.httpBody = try JSONEncoder().encode(body)
+            request.httpBody = try JSONEncoder().encode(model)
             
             let (data, response) = try await URLSession.shared.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else {
@@ -53,7 +51,7 @@ class UserDataSource {
                 return .failure(.api(.badServerResponse))
             }
         } catch {
-            return .failure(.api(.badServerResponse))
+            return .failure(.api(.unknown(error.localizedDescription)))
         }
     }
 }
