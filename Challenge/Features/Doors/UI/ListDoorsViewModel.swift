@@ -31,4 +31,17 @@ class ListDoorsViewModel: ObservableObject {
             state = .failure(error)
         }
     }
+    
+    func findDoorByName(_ name: String) async {
+        state = .loading
+        
+        let result = await dataSource.findDoorByName(name: name, page: currentPage, size: pageSize)
+        
+        switch result {
+        case .success(let response):
+            state = .success(response.content)
+        case .failure(let error):
+            state = .failure(error)
+        }
+    }
 }

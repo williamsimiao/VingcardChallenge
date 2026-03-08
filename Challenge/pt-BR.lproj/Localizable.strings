@@ -19,3 +19,6 @@
 "error_invalid_credentials" = "Credenciais inválidas";
 "error_bad_server_response" = "Erro no servidor";
 
+/* Doors */
+"search_door_placeholder" = "Buscar pelo nome da porta";
+

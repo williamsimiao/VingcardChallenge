@@ -6,6 +6,13 @@ class ListDoorsViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private var doors: [DoorModel] = []
     
+    private let searchBar: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.translatesAutoresizingMaskIntoConstraints = false
+        searchBar.placeholder = NSLocalizedString("search_door_placeholder", comment: "")
+        return searchBar
+    }()
+    
     private let tableView: UITableView = {
         let table = UITableView()
         table.translatesAutoresizingMaskIntoConstraints = false
@@ -32,13 +39,20 @@ class ListDoorsViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
+        searchBar.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
+        
+        view.addSubview(searchBar)
         view.addSubview(tableView)
         view.addSubview(loadingView)
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -90,5 +104,21 @@ extension ListDoorsViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DoorCell", for: indexPath)
         cell.textLabel?.text = doors[indexPath.row].name
         return cell
+    }
+}
+
+extension ListDoorsViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        Task {
+            if searchText.isEmpty {
+                await viewModel.getDoors()
+            } else {
+                await viewModel.findDoorByName(searchText)
+            }
+        }
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }
