@@ -11,10 +11,12 @@ class SignInRouter {
     func navigate(to route: SignInRoute) {
         switch route {
         case .signUp:
-            let signUpVC = SignUpViewController()
+            let viewModel = SignUpViewModel(dataSource: UserDataSource())
+            let signUpVC = SignUpViewController(viewModel: viewModel)
             viewController?.navigationController?.pushViewController(signUpVC, animated: true)
         case .listDoors:
-            let listDoorsVC = ListDoorsViewController()
+            let viewModel = ListDoorsViewModel(dataSource: DoorDataSource())
+            let listDoorsVC = ListDoorsViewController(viewModel: viewModel)
             viewController?.navigationController?.pushViewController(listDoorsVC, animated: true)
         }
     }

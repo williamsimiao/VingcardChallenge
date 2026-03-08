@@ -2,11 +2,20 @@ import UIKit
 import Combine
 
 class SignUpViewController: UIViewController {
-    private let viewModel = SignUpViewModel()
+    private let viewModel: SignUpViewModel
     private let signUpView = SignUpView()
     private let router = SignUpRouter()
     private var cancellables = Set<AnyCancellable>()
     private let loadingView = UIActivityIndicatorView(style: .large)
+    
+    init(viewModel: SignUpViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func loadView() {
         view = signUpView

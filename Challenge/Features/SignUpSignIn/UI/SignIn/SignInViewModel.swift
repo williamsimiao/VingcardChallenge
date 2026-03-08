@@ -13,7 +13,7 @@ class SignInViewModel: ObservableObject {
     @Published var state: SignInState = .idle
     private let dataSource: UserDataSourceProtocol
     
-    init(dataSource: UserDataSourceProtocol = UserDataSource()) {
+    init(dataSource: UserDataSourceProtocol) {
         self.dataSource = dataSource
     }
     

@@ -11,7 +11,8 @@ struct ChallengeApp: App {
 
 struct NavigationViewControllerRepresentable: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UINavigationController {
-        let signInVC = SignInViewController()
+        let viewModel = SignInViewModel(dataSource: UserDataSource())
+        let signInVC = SignInViewController(viewModel: viewModel)
         return UINavigationController(rootViewController: signInVC)
     }
     

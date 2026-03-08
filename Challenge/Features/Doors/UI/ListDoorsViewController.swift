@@ -2,7 +2,7 @@ import UIKit
 import Combine
 
 class ListDoorsViewController: UIViewController {
-    private let viewModel = ListDoorsViewModel()
+    private let viewModel: ListDoorsViewModel
     private var cancellables = Set<AnyCancellable>()
     
     private let searchController: UISearchController = {
@@ -25,6 +25,15 @@ class ListDoorsViewController: UIViewController {
         indicator.hidesWhenStopped = true
         return indicator
     }()
+    
+    init(viewModel: ListDoorsViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

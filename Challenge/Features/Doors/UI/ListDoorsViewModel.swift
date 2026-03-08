@@ -8,10 +8,9 @@ enum ListDoorsState {
     case failure(DoorError)
 }
 
-@MainActor
 class ListDoorsViewModel: ObservableObject {
     @Published var state: ListDoorsState = .idle
-    @Published var doors: [DoorModel] = []
+    var doors: [DoorModel] = []
     private let dataSource: DoorDataSourceProtocol
     
     private var allDoorsPage = 0
@@ -24,7 +23,7 @@ class ListDoorsViewModel: ObservableObject {
     private let pageSize = 20
     private var isLoading = false
     
-    init(dataSource: DoorDataSourceProtocol = DoorDataSource()) {
+    init(dataSource: DoorDataSourceProtocol) {
         self.dataSource = dataSource
     }
     
