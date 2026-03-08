@@ -20,8 +20,7 @@ class SignUpViewModel: ObservableObject {
     func createAccount(firstName: String, lastName: String, email: String, password: String) async {
         state = .loading
         
-//        let model = SignUpModel(firstName: firstName, lastName: lastName, email: email, password: password)
-        let model = SignUpModel.mock
+        let model = SignUpModel(firstName: firstName, lastName: lastName, email: email, password: password)
         let result = await dataSource.createUser(model: model)
         
         switch result {
