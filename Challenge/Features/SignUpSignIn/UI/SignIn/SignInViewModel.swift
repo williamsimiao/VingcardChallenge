@@ -11,9 +11,9 @@ enum SignInState {
 @MainActor
 class SignInViewModel: ObservableObject {
     @Published var state: SignInState = .idle
-    private let dataSource: UserDataSource
+    private let dataSource: UserDataSourceProtocol
     
-    init(dataSource: UserDataSource = UserDataSource()) {
+    init(dataSource: UserDataSourceProtocol = UserDataSource()) {
         self.dataSource = dataSource
     }
     

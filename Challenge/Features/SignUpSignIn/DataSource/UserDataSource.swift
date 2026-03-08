@@ -1,58 +1,41 @@
 import Foundation
 
-class UserDataSource {
+protocol UserDataSourceProtocol {
+    func createUser(model: SignUpModel) async -> Result<Void, SignUpError>
+    func loginUser(model: SignInModel) async -> Result<String, SignInError>
+}
+
+class UserDataSource: UserDataSourceProtocol {
+    private let networkClient: NetworkClient
+    
+    init(networkClient: NetworkClient = NetworkClient()) {
+        self.networkClient = networkClient
+    }
     
     func createUser(model: SignUpModel) async -> Result<Void, SignUpError> {
-        do {
-            let url = URL(string: APIConfig.baseURL + "users/signup")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try JSONEncoder().encode(model)
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(.api(.badServerResponse))
-            }
-            
-            if (200...299).contains(httpResponse.statusCode) {
-                return .success(())
-            } else {
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-                    return .failure(SignUpError(errorResponse: errorResponse))
-                }
-                return .failure(.api(.badServerResponse))
-            }
-        } catch {
-            return .failure(.api(.unknown(error.localizedDescription)))
-        }
+        struct EmptyResponse: Decodable {}
+        
+        let result: Result<EmptyResponse, SignUpError> = await networkClient.request(
+            endpoint: "users/signup",
+            method: "POST",
+            body: model,
+            responseType: EmptyResponse.self,
+            errorHandler: { SignUpError(errorResponse: $0) }
+        )
+        
+        return result.map { _ in () }
     }
     
     func loginUser(model: SignInModel) async -> Result<String, SignInError> {
-        do {
-            let url = URL(string: APIConfig.baseURL + "users/signin")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = try JSONEncoder().encode(model)
-            
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
-                return .failure(.api(.badServerResponse))
-            }
-            
-            if (200...299).contains(httpResponse.statusCode) {
-                let loginResponse = try JSONDecoder().decode(SignInResponse.self, from: data)
-                return .success(loginResponse.token)
-            } else {
-                if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
-                    return .failure(SignInError(errorResponse: errorResponse))
-                }
-                return .failure(.api(.badServerResponse))
-            }
-        } catch {
-            return .failure(.api(.unknown(error.localizedDescription)))
-        }
+        let result: Result<SignInResponse, SignInError> = await networkClient.request(
+            endpoint: "users/signin",
+            method: "POST",
+            body: model,
+            responseType: SignInResponse.self,
+            errorHandler: { SignInError(errorResponse: $0) }
+        )
+        
+        return result.map { $0.token }
     }
 }
 
