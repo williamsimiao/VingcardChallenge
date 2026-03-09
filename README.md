@@ -20,7 +20,7 @@ The mandatory features were implemented but there was no time left for one optin
 
 I used MVVM for the UI and domain context. The DataSource classes handle API request setup and error handling.
 
-The AI used in the project was Amazon Q. In the initial phase, the rapid interaction between prompt responses and the desired project structure, requesting adjustments and specifying patterns, allowed me to accelerate the characterization of ViewModel and DataSource classes. Once this base stage was completed during the SignUp screen implementation, it was possible to generate code for SignInViewModel, ListDoorViewModel, DoorDataSource, and error enums. Onlywith some adjustments prompts.
+The AI used in the project was Amazon Q. In the initial phase, the rapid interaction between prompt responses and the desired project structure, requesting adjustments and specifying patterns, allowed me to accelerate the characterization of ViewModel and DataSource classes. Once this base stage was completed during the SignUp screen implementation, it was possible to generate code for SignInViewModel, ListDoorViewModel, DoorDataSource, and error enums. Only some adjustments prompts were needed.
 
 For interface creation, code generation greatly simplified the work and allowed me to dedicate time to some usability improvements.
 
