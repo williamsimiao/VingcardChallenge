@@ -21,3 +21,4 @@
 
 /* Doors */
 "search_door_placeholder" = "Search by the door's name";
+"sign_out" = "Sign Out";

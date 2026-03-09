@@ -8,7 +8,6 @@ enum SignInState {
     case failure(SignInError)
 }
 
-@MainActor
 class SignInViewModel: ObservableObject {
     @Published var state: SignInState = .idle
     private let dataSource: UserDataSourceProtocol

@@ -21,4 +21,5 @@
 
 /* Doors */
 "search_door_placeholder" = "Buscar pelo nome da porta";
+"sign_out" = "Sair";
 

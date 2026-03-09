@@ -96,4 +96,8 @@ class ListDoorsViewModel: ObservableObject {
         }
         isLoading = false
     }
+    
+    func signOut() {
+        CredentialsStorage.shared.clearCredentials()
+    }
 }

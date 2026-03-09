@@ -4,6 +4,7 @@ import Combine
 class ListDoorsViewController: UIViewController {
     private let viewModel: ListDoorsViewModel
     private var cancellables = Set<AnyCancellable>()
+    private let router = ListDoorsRouter()
     
     private let searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
@@ -37,11 +38,28 @@ class ListDoorsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        router.viewController = self
+        setupNavigationBar()
         setupUI()
         observeState()
         Task {
             await viewModel.getDoors()
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationItem.hidesBackButton = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("sign_out", comment: ""),
+            style: .plain,
+            target: self,
+            action: #selector(signOutTapped)
+        )
+    }
+    
+    @objc private func signOutTapped() {
+        viewModel.signOut()
+        router.navigate(to: .back)
     }
     
     private func setupUI() {
