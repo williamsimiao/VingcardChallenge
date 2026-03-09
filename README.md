@@ -1,5 +1,6 @@
 ## Info
 seniority: Senior
+The mandatory features were implemented but there was no time left for one optinal feature.
 
 ## Requirements
 
@@ -14,25 +15,25 @@ seniority: Senior
 3. Build and run
 
 
-## Feature Archtecture and Development process
+## Feature Architecture and Development process
 
-Utilizei MVVM para o contexto de UI e dominio. As classes DataSource realizam o setup das requisições à API e tratamento de erros
+I used MVVM for the UI and domain context. The DataSource classes handle API request setup and error handling.
 
-A IA usado no projeto foi a Amazon Q. Na fase inicial a interação rápida entre o retorno dos prompts e a estrutura de projeto almejada, pedindo ajustes e especificando padrões, permitiu acelerar a caracterização das classes viewModel e DataSource. Vencida esta etapa base durante a implementação da tela de SignUp, foi possivel gerar o código para as SignInViewModel, ListDoorViewModel, DoorDataSource e os enum de erros. Apenas ajustando o necessário.
+The AI used in the project was Amazon Q. In the initial phase, the rapid interaction between prompt responses and the desired project structure, requesting adjustments and specifying patterns, allowed me to accelerate the characterization of ViewModel and DataSource classes. Once this base stage was completed during the SignUp screen implementation, it was possible to generate code for SignInViewModel, ListDoorViewModel, DoorDataSource, and error enums. Onlywith some adjustments prompts.
 
-Para criação das interfaces a geração de código simplificou muito o trabalho e permitiu dedicar tempo a algumas melhorias de usabilidade. 
+For interface creation, code generation greatly simplified the work and allowed me to dedicate time to some usability improvements.
 
 ## SignUp and SignIn feature highlights
 
-Implementação completa do fluxo de autenticação utilizando MVVM com separação clara de responsabilidades. O UserDataSource centraliza as chamadas de API (signup e signin), gerenciando a criação de usuários e login. Após login bem-sucedido, o token é armazenado no NetworkClient para autenticação de requisições subsequentes, e as credenciais são salvas de forma segura no Keychain através do CredentialsStorage singleton.
+Complete authentication flow implementation using MVVM with clear separation of responsibilities. The UserDataSource centralizes API calls (signup and signin), managing user creation and login. After successful login, the token is stored in NetworkClient for subsequent request authentication, and credentials are securely saved in Keychain through the CredentialsStorage singleton.
 
-A feature inclui tratamento de erros com mensagens específicas (email já existente, credenciais inválidas) totalmente localizadas em português e inglês. O SignInViewController implementa auto-login carregando credenciais salvas automaticamente ao iniciar. Os campos de entrada são limpos ao sair das telas (viewDidDisappear) para garantir privacidade. A navegação entre SignIn/SignUp e para a lista de portas é gerenciada por routers dedicados com enums de rotas, mantendo o código organizad.
+The feature includes error handling with specific messages (email already exists, invalid credentials) fully localized in Portuguese and English. The SignInViewController implements auto-login by automatically loading saved credentials on startup. Input fields are cleared when leaving screens (viewDidDisappear) to ensure privacy. Navigation between SignIn/SignUp and the doors list is managed by dedicated routers with route enums, keeping the code organized.
 
 ## List Doors feature highlights
 
-Feature de listagem de portas com busca em tempo real e paginação infinita otimizada. O DoorDataSource fornece dois endpoints: getDoors para listar todas as portas e findDoorByName para busca por nome com encoding de URL. Com propósito de legibilidade a ListDoorsViewModel gerencia os estados de paginação dos endpoints separadamente. A busca é implementada com UISearchController integrado à navigation bar através do protocolo UISearchResultsUpdating, atualizando os resultados conforme o usuário digita. O scroll infinito detecta quando o usuário está próximo do final da lista (threshold de 100px) e carrega automaticamente a próxima página usando o parâmetro loadMore. A tableView exibe o nome das portas de forma simples e eficiente. O ViewModel mantém o array de portas e coordena estados (idle, loading, success, failure) para atualizar a UI apropriadamente. Inclui botão "Sign Out" na navigation bar que limpa credenciais e retorna à tela de login, com back button oculto para melhor UX.
+Doors listing feature with real-time search and infinite pagination. The DoorDataSource provides two endpoints: getDoors to list all doors and findDoorByName for name search with URL encoding. For readability purposes, the ListDoorsViewModel manages pagination states for each endpoint separately. Search is implemented with UISearchController integrated into the navigation bar through the UISearchResultsUpdating protocol, updating results as the user types. Infinite scroll detects when the user is near the end of the list (100px threshold) and automatically loads the next page using the loadMore parameter. The tableView displays door names simply and efficiently. The ViewModel maintains the doors array and coordinates states (idle, loading, success, failure) to update the UI appropriately. Includes a "Sign Out" button in the navigation bar that clears credentials and returns to the login screen, with hidden back button for better UX.
 
 ## Network
 
-O NetworkClient é uma camada genérica de networking que gerencia todas as requisições HTTP da aplicação. Utiliza URLSession com async/await para chamadas assíncronas modernas e type-safe. Suporta métodos GET e POST com encoding automático de body usando JSONEncoder. O cliente armazena o token após login e o inclui automaticamente no header Authorization de todas as requisições subsequentes. O error retornado pela API é decodificado para o objeto ErrorResponse e permite que cada feature defina seu próprio errorHandler para converter ErrorResponse em erros de domínio específicos (SignUpError, SignInError, DoorError). Cada enum de erro implementa localizedMessage para exibir mensagens apropriadas ao usuário. A arquitetura permite fácil extensão para novos endpoints mantendo consistência no tratamento de erros e autenticação em toda a aplicação.
+NetworkClient is a generic networking layer that manages all HTTP requests in the application. Uses URLSession with async/await for modern, type-safe asynchronous calls. Supports GET and POST methods with automatic body encoding using JSONEncoder. The client stores the token after login and automatically includes it in the Authorization header of all subsequent requests. The error returned by the API is decoded into the ErrorResponse object and allows each feature to define its own errorHandler to convert ErrorResponse into specific domain errors (SignUpError, SignInError, DoorError). Each error enum implements localizedMessage to display appropriate messages to the user. The architecture allows easy extension for new endpoints while maintaining consistency in error handling and authentication throughout the application.
 
